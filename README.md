@@ -1,6 +1,6 @@
-# Art・wa・en - アートと人をつなぐプラットフォーム
+# Artwaen - アートと人をつなぐプラットフォーム
 
-Art・wa・enは、アート（Art）を通じて、人と人との輪（wa）と縁（en）をつなぐプラットフォームです。ライブ、展示、上映などの様々なイベントについて、出演者募集、出展者募集、来場予約を簡単に行うことができます。
+Artwaenは、アート（Art）を通じて、人と人との輪（wa）と縁（en）をつなぐプラットフォームです。ライブ、展示、上映などの様々なイベントについて、出演者募集、出展者募集、来場予約を簡単に行うことができます。
 
 ## 📑 目次
 
@@ -14,7 +14,7 @@ Art・wa・enは、アート（Art）を通じて、人と人との輪（wa）�
 
 ## コンセプト
 
-Art・wa・enは以下の3つの要素から名前が構成されています：
+Artwaenは以下の3つの要素から名前が構成されています：
 
 - **Art（アート）**: 様々なジャンルの芸術表現を応援し、アーティストの活動を支援します。
 - **Wa（輪）**: アーティスト同士、アーティストと観客、地域社会とのつながりを大切にし、新たなコミュニティの輪を広げます。
@@ -24,11 +24,11 @@ Art・wa・enは以下の3つの要素から名前が構成されています：
 
 ## 技術スタック
 
-- **フロントエンド**: Next.js 15.3, TypeScript, Tailwind CSS
+- **フロントエンド**: Next.js 14.0.4, TypeScript, Tailwind CSS
 - **バックエンド**: Next.js API Routes
 - **データベース**: PostgreSQL
 - **ORM**: Prisma
-- **認証**: NextAuth.js（予定）
+- **認証**: NextAuth.js
 
 ## 機能紹介
 
@@ -66,8 +66,8 @@ Art・wa・enは以下の3つの要素から名前が構成されています：
 
 ```bash
 # リポジトリのクローン
-git clone https://github.com/yourusername/artwaen-project.git
-cd artwaen-project
+git clone https://github.com/shogok3128/Artwaen.git
+cd Artwaen
 
 # 依存関係のインストール
 npm install
@@ -93,12 +93,12 @@ npx prisma db seed
 npm run dev
 ```
 
-ブラウザで [http://localhost:3000](http://localhost:3000) にアクセスしてアプリケーションを確認できます。
+ブラウザで [http://localhost:3005](http://localhost:3005) にアクセスしてアプリケーションを確認できます。
 
 ## プロジェクト構造
 
 ```
-artwaen-project/
+Artwaen/
 ├── prisma/            # Prismaスキーマとマイグレーション
 ├── public/            # 静的ファイル
 ├── src/
@@ -185,4 +185,4 @@ MIT
 
 ---
 
-© 2025 Art・wa・en
+© 2025 Artwaen
