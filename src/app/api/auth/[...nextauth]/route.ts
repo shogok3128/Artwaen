@@ -6,21 +6,31 @@ import { PrismaClient } from "@prisma/client";
 
 // 環境変数のデフォルト値を設定
 if (!process.env.NEXTAUTH_URL) {
+  // デフォルトURL - ローカル開発用
   process.env.NEXTAUTH_URL = "http://localhost:3005";
 }
 
 // PrismaClientはサーバーサイドでのみ初期化
-let prisma;
+let prisma: PrismaClient | null = null;
+let isDbConnected = false;
+
 try {
-  prisma = new PrismaClient();
+  // Vercelデプロイでも動作するように条件付きで初期化
+  if (process.env.DATABASE_URL) {
+    prisma = new PrismaClient();
+    isDbConnected = true;
+  }
 } catch (error) {
   console.error("Prisma初期化エラー:", error);
-  // ビルド時にはPrismaClientを初期化せず、実行時のみ初期化する
+  // Prisma初期化に失敗した場合はJWTモードを使用
   prisma = null;
+  isDbConnected = false;
 }
 
-// セッション戦略の設定（データベース接続に問題があればJWTを使用）
-const sessionStrategy = prisma ? "database" : "jwt";
+// 常にJWTモードを優先（Vercelデプロイのために）
+// 環境変数でデータベースモードを切り替え可能にする
+const useJwtMode = process.env.USE_JWT_MODE === "true" || !isDbConnected;
+const sessionStrategy = useJwtMode ? "jwt" : "database";
 
 // NextAuth設定オプション
 const authOptions: NextAuthOptions = {
@@ -40,7 +50,7 @@ const authOptions: NextAuthOptions = {
   ],
   
   // Prismaアダプタの設定（データベース接続がある場合のみ）
-  ...(prisma ? { adapter: PrismaAdapter(prisma) } : {}),
+  ...(isDbConnected && !useJwtMode ? { adapter: PrismaAdapter(prisma!) } : {}),
   
   // カスタムページの設定
   pages: {
@@ -61,14 +71,19 @@ const authOptions: NextAuthOptions = {
   
   // コールバック関数
   callbacks: {
-    async session({ session }) {
-      if (session.user) {
-        // @ts-ignore - セッションにカスタムフィールドを追加
-        session.user.id = "test-user-id";
+    async session({ session, token }) {
+      // JWTモードの場合はtokenからユーザー情報を取得
+      if (useJwtMode && token && session.user) {
+        // tokenからユーザーIDを設定（JWTモード用）
+        session.user.id = token.sub || "default-user-id";
+      } else if (session.user) {
+        // データベースモードの場合
+        session.user.id = session.user.id || "default-user-id";
       }
       return session;
     },
     async redirect({ url, baseUrl }) {
+      // 常にベースURLにリダイレクト
       return baseUrl;
     },
   },

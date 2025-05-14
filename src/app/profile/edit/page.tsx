@@ -6,22 +6,10 @@ import { useSession } from 'next-auth/react';
 import { motion } from 'framer-motion';
 import { FaUser, FaArrowLeft, FaUpload } from 'react-icons/fa';
 import Link from 'next/link';
+import { getUserProfile, saveUserProfile, UserProfile } from '@/lib/userProfileStore';
 
 // フォームデータの型定義
-interface FormData {
-  displayName: string;
-  bio: string;
-  website: string;
-  location: string;
-  social: {
-    twitter: string;
-    instagram: string;
-    facebook: string;
-    [key: string]: string; // インデックスシグネチャを追加
-  };
-  artType: string[]; // 型を修正
-  showEmail: boolean;
-}
+interface FormData extends Omit<UserProfile, 'id'> {}
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -38,7 +26,7 @@ export default function EditProfilePage() {
       instagram: '',
       facebook: '',
     },
-    artType: [], // 空の配列で初期化
+    artType: [],
     showEmail: false,
   });
   
@@ -51,13 +39,28 @@ export default function EditProfilePage() {
   
   // セッションからユーザー情報を取得
   useEffect(() => {
-    if (session?.user) {
-      setFormData(prevData => ({
-        ...prevData,
-        displayName: session.user?.name || '',
-      }));
+    if (session?.user?.id) {
+      // ローカルストレージからプロフィールを取得
+      const storedProfile = getUserProfile(session.user.id);
       
-      if (session.user?.image) {
+      setFormData({
+        displayName: storedProfile.displayName || session.user?.name || '',
+        bio: storedProfile.bio || '',
+        website: storedProfile.website || '',
+        location: storedProfile.location || '',
+        social: storedProfile.social || {
+          twitter: '',
+          instagram: '',
+          facebook: '',
+        },
+        artType: storedProfile.artType || [],
+        showEmail: storedProfile.showEmail || false,
+      });
+      
+      // 画像の設定
+      if (storedProfile.image) {
+        setImagePreview(storedProfile.image);
+      } else if (session.user?.image) {
         setImagePreview(session.user.image);
       }
     }
@@ -137,14 +140,23 @@ export default function EditProfilePage() {
     setIsSubmitting(true);
     
     try {
-      // ここでAPIにデータを送信する処理を実装
-      // 実際のプロジェクトではバックエンドへのAPI呼び出しを行う
-      console.log('送信されたデータ:', formData);
-      console.log('プロフィール画像:', imagePreview);
+      if (!session?.user?.id) {
+        throw new Error('ユーザーIDが見つかりません');
+      }
       
-      // 成功した場合はプロフィールページにリダイレクト
-      alert('プロフィールが更新されました');
-      router.push('/profile');
+      // ローカルストレージに保存
+      const success = saveUserProfile({
+        id: session.user.id,
+        ...formData,
+        image: imagePreview || undefined,
+      });
+      
+      if (success) {
+        alert('プロフィールが更新されました');
+        router.push('/profile');
+      } else {
+        throw new Error('プロフィールの保存に失敗しました');
+      }
     } catch (error) {
       console.error('プロフィール更新エラー:', error);
       alert('エラーが発生しました。再度お試しください。');
