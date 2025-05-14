@@ -7,12 +7,28 @@ import { motion } from 'framer-motion';
 import { FaUser, FaArrowLeft, FaUpload } from 'react-icons/fa';
 import Link from 'next/link';
 
+// フォームデータの型定義
+interface FormData {
+  displayName: string;
+  bio: string;
+  website: string;
+  location: string;
+  social: {
+    twitter: string;
+    instagram: string;
+    facebook: string;
+    [key: string]: string; // インデックスシグネチャを追加
+  };
+  artType: string[]; // 型を修正
+  showEmail: boolean;
+}
+
 export default function EditProfilePage() {
   const router = useRouter();
   const { data: session, status } = useSession();
   
   // フォームの状態
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     displayName: '',
     bio: '',
     website: '',
@@ -22,7 +38,7 @@ export default function EditProfilePage() {
       instagram: '',
       facebook: '',
     },
-    artType: [], // 複数選択可能
+    artType: [], // 空の配列で初期化
     showEmail: false,
   });
   
@@ -38,10 +54,10 @@ export default function EditProfilePage() {
     if (session?.user) {
       setFormData(prevData => ({
         ...prevData,
-        displayName: session.user.name || '',
+        displayName: session.user?.name || '',
       }));
       
-      if (session.user.image) {
+      if (session.user?.image) {
         setImagePreview(session.user.image);
       }
     }
@@ -68,13 +84,16 @@ export default function EditProfilePage() {
     if (name.includes('.')) {
       // ネストされたプロパティの処理（social.twitter など）
       const [parent, child] = name.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value
-        }
-      }));
+      
+      if (parent === 'social') {
+        setFormData(prev => ({
+          ...prev,
+          social: {
+            ...prev.social,
+            [child]: value
+          }
+        }));
+      }
     } else if (type === 'checkbox') {
       setFormData(prev => ({
         ...prev,
@@ -85,7 +104,7 @@ export default function EditProfilePage() {
       const selectedOptions = Array.from((e.target as HTMLSelectElement).selectedOptions, option => option.value);
       setFormData(prev => ({
         ...prev,
-        [name]: selectedOptions
+        artType: selectedOptions
       }));
     } else {
       setFormData(prev => ({

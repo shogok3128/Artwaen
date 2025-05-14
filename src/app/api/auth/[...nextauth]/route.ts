@@ -11,7 +11,7 @@ if (!process.env.NEXTAUTH_URL) {
   process.env.NEXTAUTH_URL = "http://localhost:3005";
 }
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -37,12 +37,13 @@ export const authOptions: NextAuthOptions = {
     // テスト用: 常に認証済みとして扱う
     async session({ session }) {
       // テスト用ユーザー情報を提供
-      session.user = {
-        id: "test-user-id",
-        name: "テストユーザー",
-        email: "test@example.com",
-        image: "https://via.placeholder.com/150"
-      };
+      if (session.user) {
+        // @ts-ignore - セッションにカスタムフィールドを追加
+        session.user.id = "test-user-id";
+        session.user.name = "テストユーザー";
+        session.user.email = "test@example.com";
+        session.user.image = "https://via.placeholder.com/150";
+      }
       return session;
     },
     async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
