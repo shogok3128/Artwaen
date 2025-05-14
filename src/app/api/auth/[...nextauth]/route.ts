@@ -4,19 +4,26 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 
-// Prismaクライアントの初期化
-const prisma = new PrismaClient();
-
 // 環境変数のデフォルト値を設定
 if (!process.env.NEXTAUTH_URL) {
   process.env.NEXTAUTH_URL = "http://localhost:3005";
 }
 
+// PrismaClientはサーバーサイドでのみ初期化
+let prisma;
+try {
+  prisma = new PrismaClient();
+} catch (error) {
+  console.error("Prisma初期化エラー:", error);
+  // ビルド時にはPrismaClientを初期化せず、実行時のみ初期化する
+  prisma = null;
+}
+
+// セッション戦略の設定（データベース接続に問題があればJWTを使用）
+const sessionStrategy = prisma ? "database" : "jwt";
+
 // NextAuth設定オプション
 const authOptions: NextAuthOptions = {
-  // Prismaアダプタの設定（サーバー側でのみ実行）
-  adapter: PrismaAdapter(prisma),
-  
   // 認証プロバイダの設定
   providers: [
     GoogleProvider({
@@ -32,6 +39,9 @@ const authOptions: NextAuthOptions = {
     }),
   ],
   
+  // Prismaアダプタの設定（データベース接続がある場合のみ）
+  ...(prisma ? { adapter: PrismaAdapter(prisma) } : {}),
+  
   // カスタムページの設定
   pages: {
     signIn: "/auth/signin",
@@ -42,7 +52,8 @@ const authOptions: NextAuthOptions = {
   
   // セッション設定
   session: {
-    strategy: "jwt",
+    strategy: sessionStrategy,
+    maxAge: 30 * 24 * 60 * 60, // 30日
   },
   
   // 秘密鍵の設定
