@@ -11,10 +11,12 @@ import {
   FaBell, 
   FaCog, 
   FaChartLine,
-  FaEdit
+  FaEdit,
+  FaListUl
 } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import Todo from '../../components/Todo';
 
 // ダッシュボードコンポーネント - 認証状態に基づいて表示内容を変更
 export default function DashboardPage() {
@@ -74,6 +76,7 @@ export default function DashboardPage() {
     { id: 'events', label: 'イベント管理', icon: <FaCalendarAlt /> },
     { id: 'favorites', label: 'お気に入り', icon: <FaHeart /> },
     { id: 'profile', label: 'プロフィール', icon: <FaUser /> },
+    { id: 'todo', label: 'ToDoリスト', icon: <FaListUl /> },
     { id: 'notifications', label: '通知', icon: <FaBell /> },
     { id: 'settings', label: '設定', icon: <FaCog /> }
   ];
@@ -309,7 +312,12 @@ export default function DashboardPage() {
             </div>
           )}
           
-          {/* 他のセクションは省略（通知、設定など） */}
+          {activeSection === 'todo' && (
+            <div>
+              <h2 className="text-xl font-semibold mb-6">ToDoリスト</h2>
+              <Todo />
+            </div>
+          )}
           
           {(activeSection === 'notifications' || activeSection === 'settings') && (
             <div className="text-center py-12">
