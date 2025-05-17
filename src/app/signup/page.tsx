@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { signUp, signInWithGoogle } from '@/lib/auth';
 
-export default function SignupPage() {
+const SignupPage: React.FC = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -169,4 +169,6 @@ export default function SignupPage() {
       </div>
     </div>
   );
-} 
+};
+
+export default SignupPage; 

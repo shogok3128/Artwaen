@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { signIn, signInWithGoogle } from '@/lib/auth';
 
-export default function LoginPage() {
+const LoginPage: React.FC = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -150,4 +150,6 @@ export default function LoginPage() {
       </div>
     </div>
   );
-} 
+};
+
+export default LoginPage; 
