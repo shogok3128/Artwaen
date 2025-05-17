@@ -135,15 +135,15 @@ const LoginPage: React.FC = () => {
           <div className="mt-6">
             <button
               onClick={handleGoogleLogin}
-              className="flex items-center justify-center w-full px-4 py-2 space-x-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="flex items-center justify-center w-full px-4 py-2 space-x-3 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path
-                  fill="#4285F4"
-                  d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z"
-                />
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19.2 10.2273C19.2 9.55709 19.1455 8.90255 19.0364 8.27273H10V12.0455H15.1909C14.9818 13.2682 14.3182 14.3018 13.3091 14.9818V17.4545H16.4727C18.3273 15.7364 19.2 13.2 19.2 10.2273Z" fill="#4285F4"/>
+                <path d="M10 20C12.6727 20 14.9636 19.1045 16.4727 17.4545L13.3091 14.9818C12.4591 15.5455 11.3591 15.8636 10 15.8636C7.49091 15.8636 5.38182 14.1364 4.60909 11.8H1.35455V14.3636C2.87273 17.6818 6.20909 20 10 20Z" fill="#34A853"/>
+                <path d="M4.60909 11.8C4.42727 11.2364 4.32727 10.6273 4.32727 10C4.32727 9.37273 4.42727 8.76364 4.60909 8.2H1.35455V10.7636C1.35455 10.7636 1.35455 10.7636 1.35455 10.7636L4.60909 11.8Z" fill="#FBBC05"/>
+                <path d="M10 4.13636C11.4182 4.13636 12.6818 4.63636 13.6636 5.57273L16.4909 2.74545C14.9591 1.29091 12.6727 0.318182 10 0.318182C6.20909 0.318182 2.87273 2.63636 1.35455 5.95455L4.60909 8.2C5.38182 5.86364 7.49091 4.13636 10 4.13636Z" fill="#EA4335"/>
               </svg>
-              <span>Googleでログイン</span>
+              <span>Googleアカウントでログイン</span>
             </button>
           </div>
         </div>

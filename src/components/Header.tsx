@@ -161,9 +161,14 @@ export default function Header() {
                       ログアウト
                     </button>
                   ) : (
-                    <Link href="/auth/signin" className="p-3 bg-gray-50 rounded-lg text-center">
-                      ログイン
-                    </Link>
+                    <div className="grid grid-cols-2 col-span-2 gap-2">
+                      <Link href="/login" className="p-3 bg-gray-50 rounded-lg text-center text-primary-600">
+                        ログイン
+                      </Link>
+                      <Link href="/signup" className="p-3 bg-primary-600 rounded-lg text-center text-white">
+                        新規登録
+                      </Link>
+                    </div>
                   )}
                 </div>
                 <button
