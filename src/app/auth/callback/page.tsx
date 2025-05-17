@@ -4,6 +4,9 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
+// 静的生成を無効化（SSRのみ）
+export const dynamic = 'force-dynamic';
+
 export default function AuthCallbackPage() {
   const router = useRouter();
 
@@ -12,10 +15,17 @@ export default function AuthCallbackPage() {
     const handleAuthCallback = async () => {
       try {
         // URLからcodeパラメータを取得
-        const code = new URL(window.location.href).searchParams.get('code');
+        const url = window.location.href;
+        console.log('コールバックURL:', url);
+        
+        const code = new URL(url).searchParams.get('code');
         
         if (code) {
+          console.log('認証コード取得成功');
           await supabase.auth.exchangeCodeForSession(code);
+          console.log('セッション交換成功');
+        } else {
+          console.log('認証コードが見つかりません');
         }
         
         // ログイン成功後、ホームページにリダイレクト

@@ -24,10 +24,26 @@ export async function signIn(email: string, password: string) {
 
 // Googleでサインイン
 export async function signInWithGoogle() {
+  // リダイレクトURLの設定 - 環境に基づいて適切なURLを使用
+  let redirectUrl;
+  if (typeof window !== 'undefined') {
+    // クライアントサイドの場合は現在のオリジンを使用
+    const origin = window.location.origin;
+    redirectUrl = `${origin}/auth/callback`;
+    
+    // 開発環境の場合、コンソールに情報を表示
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Google認証リダイレクトURL: ${redirectUrl}`);
+    }
+  } else {
+    // サーバーサイドの場合はデフォルトURLを使用
+    redirectUrl = process.env.NEXT_PUBLIC_AUTH_REDIRECT_URL || '/auth/callback';
+  }
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      redirectTo: redirectUrl,
     },
   });
   
